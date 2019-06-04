@@ -1,19 +1,18 @@
 <html>
-<head>
+  <head>
     <title>Agar.io</title>
-    <link href="style.css" rel="stylesheet">
-</head>
-<body>
+    <link href="style.css" rel="stylesheet" />
+  </head>
+  <body>
     <section>
-        <h1>Agar.io</h1>
-        <input type="text" placeholder="Enter login"><br>
-        <button onclick="play()">Play</button>
+      <h1>Agar.io</h1>
+      <input type="text" placeholder="Enter login" id="nick" />
+      <input type="color" id="color" /><br />
+      <button onclick="play()">Play</button>
     </section>
-    
-    <canvas id="canvas">
-        <!-- <img src="avatars/ball.png" id="avatar1" width="200" height="200"> -->
-    </canvas>
+
+    <canvas id="canvas"></canvas>
 
     <script src="script.js"></script>
-</body>
+  </body>
 </html>
