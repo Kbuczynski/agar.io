@@ -12,13 +12,13 @@ let moveX = 1;
 let moveY = 1;
 
 //bonus balls
-var bonusBallSize = 5;
-var numberOfBalls = Math.floor(Math.random() * 5 + 2);
+let bonusBallSize = 5;
+let numberOfBalls = Math.floor(Math.random() * 5 + 2);
 
 const positionBallsX = [];
 const positionBallsY = [];
 
-var ballsObject = generateBonusBalls();
+const ballsObject = generateBonusBalls();
 
 class Player {
   constructor(nick, color) {
@@ -137,9 +137,9 @@ function generateBonusBalls() {
   positionBallsX.splice(0, numberOfBalls);
   positionBallsY.splice(0, numberOfBalls);
 
-  for (var i = 0; i < numberOfBalls; i++)
+  for (let i = 0; i < numberOfBalls; i++)
     positionBallsX.push(Math.floor(Math.random() * pageX + 1));
-  for (var i = 0; i < numberOfBalls; i++)
+  for (let i = 0; i < numberOfBalls; i++)
     positionBallsY.push(Math.floor(Math.random() * pageY + 1));
 
   return {
@@ -149,7 +149,7 @@ function generateBonusBalls() {
 }
 
 function drawBonusBalls() {
-  for (var i = 0; i < numberOfBalls; i++) {
+  for (let i = 0; i < numberOfBalls; i++) {
     c.arc(ballsObject.x[i], ballsObject.y[i], bonusBallSize, 0, 10 * Math.PI);
     c.fillStyle =
       "#" +
@@ -165,7 +165,7 @@ function drawBonusBalls() {
 canvas.addEventListener(
   "mousemove",
   function(evt) {
-    var mousePos = getMousePos(canvas, evt);
+    let mousePos = getMousePos(canvas, evt);
     x = mousePos.x;
     y = mousePos.y;
   },
@@ -174,7 +174,7 @@ canvas.addEventListener(
 
 //get mouse position
 function getMousePos(canvas, evt) {
-  var rect = canvas.getBoundingClientRect();
+  let rect = canvas.getBoundingClientRect();
   return {
     x: evt.clientX - rect.left,
     y: evt.clientY - rect.top
