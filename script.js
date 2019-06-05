@@ -30,6 +30,7 @@ class Player {
     this.sizeRect = 5;
     this.ballX = Math.floor(Math.random() * pageX);
     this.ballY = Math.floor(Math.random() * pageY);
+    this.speed = 2;
   }
 
   draw() {
@@ -41,8 +42,8 @@ class Player {
 
       //rect
       c.fillRect(
-        this.ballX - this.sizeBall / 2,
-        this.ballY + this.sizeBall / 2,
+        this.ballX - this.sizeRect / 2,
+        this.ballY + this.sizeBall,
         this.sizeRect,
         this.sizeRect
       );
@@ -66,23 +67,26 @@ class Player {
   }
 
   growing() {
-    if (this.sizeBall <= 50) {
-      this.sizeBall++;
-      this.sizeRect++;
+    if (this.sizeBall < 50) {
+      this.sizeBall += 3;
+      this.sizeRect += 3;
+
+      if (this.speed > 0) this.speed = this.speed * 0.9;
+      else this.speed = 0.5;
     }
   }
 
   collision(enemy) {
-    let enemyX = enemy.ballX - enemy.sizeBall / 2;
-    let enemyY = enemy.ballY + enemy.sizeBall / 2;
+    let enemyX = enemy.ballX - enemy.sizeRect / 2;
+    let enemyY = enemy.ballY + enemy.sizeBall;
 
     //collision with balls
     for (let i = 0; i < numberOfBalls; i++) {
       if (
-        ballsObject.x[i] < this.ballX + this.sizeBall / 2 &&
-        ballsObject.x[i] > this.ballX - this.sizeBall / 2 &&
-        ballsObject.y[i] < this.ballY + this.sizeBall / 2 &&
-        ballsObject.y[i] > this.ballY - this.sizeBall / 2
+        Math.sqrt(
+          Math.pow(ballsObject.x[i] - this.ballX, 2) +
+            Math.pow(ballsObject.y[i] - this.ballY, 2)
+        ) < this.sizeBall
       ) {
         this.sizeBall = 10;
         this.sizeRect = 5;
@@ -93,10 +97,9 @@ class Player {
 
     //collision with enemy
     if (
-      enemyX < this.ballX + this.sizeBall / 2 &&
-      enemyX > this.ballX - this.sizeBall / 2 &&
-      enemyY < this.ballY + this.sizeBall / 2 &&
-      enemyY > this.ballY - this.sizeBall / 2
+      Math.sqrt(
+        Math.pow(enemyX - this.ballX, 2) + Math.pow(enemyY - this.ballY, 2)
+      ) < this.sizeBall
     ) {
       enemy.isLives = false;
       this.score += 1;
@@ -111,6 +114,8 @@ class Player {
       this.sizeRect = 5;
       this.ballX = Math.floor(Math.random() * pageX);
       this.ballY = Math.floor(Math.random() * pageY);
+
+      this.speed = 2;
     }
   }
 }
@@ -121,11 +126,9 @@ class Bot extends Player {
   }
 
   findPath(enemy) {
-    let speed = 1;
-
     //enemy coordinates
-    let enemyX = enemy.ballX - enemy.sizeBall / 2;
-    let enemyY = enemy.ballY + enemy.sizeBall / 2;
+    let enemyX = enemy.ballX - enemy.sizeRect / 2;
+    let enemyY = enemy.ballY + enemy.sizeBall;
 
     //player coordinates
     let x = this.ballX;
@@ -134,16 +137,24 @@ class Bot extends Player {
     let MovesX = enemyX - x;
     let MovesY = enemyY - y;
 
-    if (MovesX < 0) {
-      this.ballX = this.ballX - speed;
-    } else if (MovesX > 0) {
-      this.ballX = this.ballX + speed;
+    if (this.ballX > 0 && this.ballX < pageX) {
+      if (MovesX < 0) {
+        this.ballX = this.ballX - this.speed;
+      } else if (MovesX > 0) {
+        this.ballX = this.ballX + this.speed;
+      }
+    } else {
+      this.ballX = 10;
     }
 
-    if (MovesY < 0) {
-      this.ballY = this.ballY - speed;
-    } else if (MovesY > 0) {
-      this.ballY = this.ballY + speed;
+    if (this.ballY > 0 && this.ballY < pageY) {
+      if (MovesY < 0) {
+        this.ballY = this.ballY - this.speed;
+      } else if (MovesY > 0) {
+        this.ballY = this.ballY + this.speed;
+      }
+    } else {
+      this.ballY = 10;
     }
   }
 }
@@ -152,7 +163,8 @@ class Bot extends Player {
 let MainPlayer = new Player("", "");
 
 //bots objects
-const Bot1 = new Bot("Bot1", "red");
+const Bot1 = new Bot("BotRed", "red");
+const Bot2 = new Bot("Bot2Yellow", "yellow");
 
 function play() {
   MainPlayer = new Player(
@@ -172,22 +184,38 @@ function draw() {
 
   //regenerations
   MainPlayer.regeneration();
+
   Bot1.regeneration();
+  Bot2.regeneration();
 
   //bonus balls
   drawBonusBalls();
+
+  //bots
+  MainPlayer.draw();
+  MainPlayer.move();
+
+  Bot1.draw();
+  Bot1.findPath(MainPlayer);
+  //Bot1.findPath(Bot2);
+
+  Bot2.draw();
+  //Bot2.findPath(MainPlayer);
+  Bot2.findPath(Bot1);
 
   //player
   MainPlayer.draw();
   MainPlayer.move();
 
-  //bots
-  Bot1.draw();
-  Bot1.findPath(MainPlayer);
-
   //detect collision
   MainPlayer.collision(Bot1);
+  MainPlayer.collision(Bot2);
+
   Bot1.collision(MainPlayer);
+  Bot1.collision(Bot2);
+
+  Bot2.collision(MainPlayer);
+  Bot2.collision(Bot1);
 
   score();
 
@@ -195,12 +223,21 @@ function draw() {
 }
 
 function score() {
-  c.font = "60px sans-serif";
-  c.strokeText("Your score: " + MainPlayer.score, pageX / 3, 60);
+  let y = 40;
+  let x = 0;
+
+  c.textAlign = "left";
+
+  c.font = "30px sans-serif";
+  c.strokeText(MainPlayer.nick + " score: " + MainPlayer.score, x, y);
   c.beginPath();
 
-  c.font = "60px sans-serif";
-  c.strokeText("Bots score: " + Bot1.score, pageX / 3 + pageX / 3, 60);
+  c.font = "30px sans-serif";
+  c.strokeText(Bot1.nick + " score: " + Bot1.score, x, y + y);
+  c.beginPath();
+
+  c.font = "30px sans-serif";
+  c.strokeText(Bot2.nick + " score: " + Bot2.score, x, y + y * 2);
   c.beginPath();
 }
 
@@ -254,6 +291,6 @@ function getMousePos(canvas, evt) {
 
 function main() {
   setInterval("draw()", 10);
-  setInterval("MainPlayer.growing(), Bot1.growing()", 1000);
-  setInterval("generateBonusBalls()", 30000);
+  setInterval("Bot2.growing(), Bot1.growing(), MainPlayer.growing()", 3000);
+  setInterval("generateBonusBalls()", 20000);
 }
