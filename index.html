@@ -1,18 +1,79 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>Agar.io</title>
-    <link href="style.css" rel="stylesheet" />
+
+    <link href="./css/index.css" rel="stylesheet" />
+
+    <script defer type="module" src="./js/index.js"></script>
   </head>
   <body>
-    <section>
-      <h1>Agar.io</h1>
-      <input type="text" placeholder="Enter login" id="nick" />
-      <input type="color" id="color" /><br />
-      <button onclick="play()">Play</button>
+    <section class="welcome-screen">
+      <h1 class="welcome-screen__title">Agar.io</h1>
+
+      <form class="welcome-screen__form">
+        <div class="welcome-screen__form__group">
+          <label for="nick" class="welcome-screen__form__group--label"
+            >Enter your nickname:</label
+          >
+          <input
+            type="text"
+            id="nick"
+            class="welcome-screen__form__group--input"
+            autofocus
+            placeholder="e.g. John Doe"
+          />
+        </div>
+
+        <div class="welcome-screen__form__group">
+          <label for="color" class="welcome-screen__form__group--label"
+            >Choose your color:</label
+          >
+          <input type="color" id="color" />
+        </div>
+
+        <div class="welcome-screen__form__group">
+          <label for="mode" class="welcome-screen__form__group--label"
+            >Choose game mode:</label
+          >
+          <select id="mode" class="welcome-screen__form__group--input">
+            <option value="0">You vs AI</option>
+            <option value="1">Watch duel of AI</option>
+          </select>
+        </div>
+
+        <div class="welcome-screen__form__group">
+          <label for="enemys" class="welcome-screen__form__group--label"
+            >Choose number of enemys:</label
+          >
+          <input
+            type="number"
+            id="enemys"
+            class="welcome-screen__form__group--input"
+            min="1"
+            max="100"
+            value="1"
+          />
+        </div>
+
+        <button type="submit" id="play" class="welcome-screen__form__btn">
+          Play
+        </button>
+      </form>
     </section>
 
-    <canvas id="canvas"></canvas>
+    <div class="preloader">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
 
-    <script src="script.js"></script>
+    <ol class="score-table"></ol>
+
+    <canvas id="canvas"></canvas>
   </body>
 </html>
